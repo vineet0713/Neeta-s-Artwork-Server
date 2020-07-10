@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const itemsRoutes = require('./routes/items');
 const imagesRoute = require('./routes/images');
+const commentsRoutes = require('./routes/comments');
 
 // This makes it possible to parse JSON data from incoming requests!
 // (will extract incoming request data and assign it to a 'body' field to the request object in middleware)
@@ -32,6 +33,7 @@ app.use((request, response, next) => {
 app.use('/api', authRoutes);
 app.use('/api', itemsRoutes);
 app.use('/api', imagesRoute);
+app.use('/api', commentsRoutes);
 
 app.use((error, request, response, next) => {
 	console.log('Inside error handling middlware!');
