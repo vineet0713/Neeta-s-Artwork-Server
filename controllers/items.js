@@ -3,6 +3,7 @@ const Item = require('./../models/item');
 exports.storeItem = (request, response, next) => {
 	const itemToStore = new Item({
 		title: request.body.title,
+		type: request.body.type,
 		imagePath: request.body.imagePath,
 	});
 	itemToStore.save()
@@ -13,7 +14,17 @@ exports.storeItem = (request, response, next) => {
 exports.getItems = (request, response, next) => {
 	const pageSize = +request.query.pageSize;
 	const currentPage = +request.query.page;
-	const itemQuery = Item.find();
+	const filters = request.query.filters;
+	let filterObject = {};
+	if (filters) {
+		const filteredTypes = filters.split(',');
+		const filtersArray = [];
+		for (filter of filteredTypes) {
+			filtersArray.push({ type: filter });
+		}
+		filterObject = { $or: filtersArray };
+	}
+	const itemQuery = Item.find(filterObject);
 	if (pageSize && currentPage) {
 		itemQuery
 			.sort({ createdAt: -1 })				// sorts items in descending order of creation time
@@ -21,7 +32,7 @@ exports.getItems = (request, response, next) => {
 			.limit(pageSize)						// only returns n items
 	}
 	let totalItems;
-	Item.find().countDocuments()
+	Item.find(filterObject).countDocuments()
 		.then(itemCount => {
 			totalItems = itemCount;
 			return itemQuery;
