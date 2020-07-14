@@ -3,6 +3,7 @@ const Item = require('./../models/item');
 exports.storeItem = (request, response, next) => {
 	const itemToStore = new Item({
 		title: request.body.title,
+		description: request.body.description,
 		type: request.body.type,
 		imagePath: request.body.imagePath,
 	});
